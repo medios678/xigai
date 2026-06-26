@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大学生革命文化认知情况调查问卷</title>
+<style>
+  :root { color-scheme: light; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+    background: linear-gradient(135deg, #f5f0e8 0%, #e8ddd0 30%, #d4c5b2 100%);
+    min-height: 100vh;
+    padding: 30px 20px;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+  .header {
+    background: linear-gradient(135deg, #8b1a1a 0%, #b53434 40%, #c0392b 100%);
+    color: #fff;
+    padding: 50px 40px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(139, 26, 26, 0.25);
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: "";
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(255,215,0,0.08) 0%, transparent 60%);
+    animation: pulse 6s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{transform:scale(1);opacity:0.5} 50%{transform:scale(1.1);opacity:1} }
+  .header h1 { font-size: 2.2em; letter-spacing: 3px; margin-bottom: 12px; position: relative; z-index: 1; }
+  .header .subtitle { font-size: 1.05em; opacity: 0.9; letter-spacing: 1px; position: relative; z-index: 1; }
+  .header .org { margin-top: 10px; font-size: 0.9em; opacity: 0.75; position: relative; z-index: 1; }
+  .intro {
+    background: #fff;
+    border-left: 5px solid #8b1a1a;
+    border-radius: 8px;
+    padding: 25px 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    line-height: 1.8; color: #444;
+  }
+  .intro p { margin-bottom: 6px; }
+  .card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 30px 35px;
+    margin-bottom: 25px;
+    box-shadow: 0 3px 16px rgba(0,0,0,0.07);
+  }
+  .card h2 {
+    font-size: 1.3em; color: #8b1a1a;
+    border-bottom: 2px solid #e8ddd0;
+    padding-bottom: 10px; margin-bottom: 22px;
+    letter-spacing: 1px;
+  }
+  .question { margin-bottom: 22px; }
+  .question .q-title {
+    font-weight: 700; color: #333; margin-bottom: 8px; font-size: 1.02em;
+  }
+  .question .q-title .q-num {
+    display: inline-block;
+    background: #8b1a1a; color: #fff;
+    width: 24px; height: 24px; line-height: 24px;
+    text-align: center; border-radius: 50%;
+    font-size: 0.85em; margin-right: 8px;
+  }
+  .options {
+    display: flex; flex-wrap: wrap; gap: 8px 20px;
+    padding-left: 32px; color: #555;
+  }
+  .options label {
+    cursor: pointer; padding: 4px 12px;
+    border-radius: 20px; transition: all 0.2s;
+  }
+  .options label:hover { background: #fdf2f2; color: #8b1a1a; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85em; margin-top: 10px; }
+  thead th {
+    background: #8b1a1a; color: #fff;
+    padding: 11px 6px; text-align: center;
+    font-weight: 600; letter-spacing: 0.5px;
+    position: sticky; top: 0;
+  }
+  thead th:first-child { border-radius: 6px 0 0 0; }
+  thead th:last-child { border-radius: 0 6px 0 0; }
+  tbody td {
+    padding: 10px 6px; text-align: center;
+    border-bottom: 1px solid #eee; color: #444;
+  }
+  tbody tr:hover { background: #fef9f5; }
+  tbody tr:nth-child(even) { background: #fafaf8; }
+  tbody tr:nth-child(even):hover { background: #fef9f5; }
+  .table-wrapper { overflow-x: auto; }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+  }
+  .stat-item {
+    background: linear-gradient(135deg, #fdf2f2 0%, #fff 100%);
+    border: 1px solid #f0dada;
+    border-radius: 10px; padding: 20px; text-align: center;
+  }
+  .stat-item .stat-label { font-size: 0.9em; color: #888; margin-bottom: 6px; }
+  .stat-item .stat-value { font-size: 2em; font-weight: 700; color: #8b1a1a; }
+  .stat-item .stat-detail { font-size: 0.82em; color: #999; margin-top: 4px; }
+  .chart-row { display: flex; flex-wrap: wrap; gap: 25px; }
+  .chart-box { flex: 1; min-width: 280px; }
+  .chart-box h3 { font-size: 1em; color: #555; margin-bottom: 12px; text-align: center; }
+  canvas { max-height: 260px; }
+  /* 视频资源区 */
+  .video-resource {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 18px;
+    margin-top: 15px;
+  }
+  .video-card {
+    background: #fefefe;
+    border: 1px solid #e8ddd0;
+    border-radius: 10px;
+    padding: 20px;
+    transition: all 0.25s;
+  }
+  .video-card:hover {
+    box-shadow: 0 6px 20px rgba(139,26,26,0.1);
+    transform: translateY(-2px);
+  }
+  .video-card .vc-tag {
+    display: inline-block;
+    background: #8b1a1a; color: #fff;
+    font-size: 0.75em; padding: 2px 10px;
+    border-radius: 12px; margin-bottom: 8px;
+  }
+  .video-card .vc-tag.doc { background: #b53434; }
+  .video-card .vc-tag.short { background: #c0392b; }
+  .video-card .vc-title { font-weight: 700; font-size: 1.02em; color: #333; margin-bottom: 6px; }
+  .video-card .vc-desc { font-size: 0.88em; color: #777; line-height: 1.6; }
+  .video-card .vc-platform { font-size: 0.8em; color: #aaa; margin-top: 8px; }
+  .footer { text-align: center; color: #999; font-size: 0.82em; padding: 20px; margin-top: 10px; }
+  @media print { body { background: #fff; padding: 0; } .card { box-shadow: none; break-inside: avoid; } }
+  @media (max-width: 768px) {
+    .header h1 { font-size: 1.4em; }
+    .card { padding: 20px; }
+    .options { flex-direction: column; gap: 4px; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .chart-row { flex-direction: column; }
+    .video-resource { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ======== 封面 ======== -->
+<div class="header">
+  <h1>大学生革命文化认知情况调查问卷</h1>
+  <p class="subtitle">——传承红色基因，弘扬革命精神——</p>
+  <p class="org">思想政治教育工作课题组 &nbsp;|&nbsp; 2026年6月</p>
+</div>
+
+<!-- ======== 说明 ======== -->
+<div class="intro">
+  <p><strong>亲爱的同学：</strong></p>
+  <p>您好！为深入了解当代大学生对革命文化的认知、态度及参与情况，我们特开展本次问卷调查。本问卷采用<strong>匿名</strong>方式，所有数据仅用于学术研究，请您根据实际情况如实作答。感谢您的支持与配合！</p>
+  <p style="color:#999;font-size:0.9em;">本问卷共21题，预计用时6-9分钟。选择题如无特别说明均为单选题。</p>
+</div>
+
+<!-- ======== 第一部分：基本信息 ======== -->
+<div class="card">
+  <h2>一、基本信息</h2>
+
+  <div class="question">
+    <div class="q-title"><span class="q-num">1</span>您的性别：</div>
+    <div class="options">
+      <label><input type="radio" name="q1"> 男</label>
+      <label><input type="radio" name="q1"> 女</label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-title"><span class="q-num">2</span>您所在的年级：</div>
+    <div class="options">
+      <label><input type="radio" name="q2"> 大一</label>
+      <label><input type="radio" name="q2"> 大二</label>
+      <label><input type="radio" name="q2"> 大三</label>
+      <label><input type="radio" name="q2"> 大四</label>
+      <label><input type="radio" name="q2"> 研究生及以上</label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-title"><span class="q-num">3</span>您的专业类别：</div>
+    <div class="options">
+      <label><input type="radio" name="q3"> 文史哲类</label>
+      <label><input type="radio" name="q3"> 理工类</label>
+      <label><input type="radio" name="q3"> 经管法类</label>
+      <label><input type="radio" name="q3"> 农医类</label>
+      <label><input type="radio" name="q3"> 艺术体育类</label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-title"><span class="q-num">4</span>您的政治面貌：</div>
+    <div class="options">
+      <label><input type="radio" name="q4"> 中共党员（含预备）</label>
+      <label><input type="radio" name="q4"> 共青团员</label>
+      <label><input type="radio" name="q4"> 群众</label>
+    </div>
+  </div>
+</div>
+
+<!-- ======== 第二部分：认知层面 ======== -->
+<div class="card">
+  <h2>二、革命文化认知层面</h2>
+
+  <div class="question">
+    <div class="q-title"><span class="q-num">5</span>您认为自己对革命文化的了解程度如何？</div>
+    <div class="options">
+      <label><input type="radio" name="q5"> 非常了解</label>
+      <label><input type="radio" name="q5"> 比较了解</label>
+      <label><input type="radio" name="q5"> 一般</label>
+      <label><input type="radio" name="q5"> 不太了解</label>
+      <label><input type="radio" name="q5"> 完全不了解</label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-title"><span class="q-num">6</span>您能否准确说出至少3位革命先烈及其主要事迹？</div>
+    <div class="options">
+      <label><input type="radio" name="q6"> 能说出5位以上</label>
+      <label><input type="radio" name="q6"> 能说出3-5位</label>
+      <label><input type="radio" name="q6"> 能说出1-2位</label>
+      <label><input type="radio" name="q6"> 说不上来</label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-title"><span class="q-num">7</span>您是否了解"井冈山精神""长征精神""延安精神"的核心内涵？</div>
+    <div class="options">
+      <label><input type="radio" name="q7"> 全部了解</label>
+      <label><input type="radio" name="q7"> 了解大部分</label>
+      <label><input type="radio" name="q7"> 了解一部分</label>
+      <label><input type="radio" name="q7"> 基本不了解</label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-title"><span class="q-num">8</span>您主要通过哪些渠道了解革命文化？（可多选）</div>
+    <div class="options">
+      <label><input type="checkbox" name="q8"> 学校思政课</label>
+      <label><input type="checkbox" name="q8"> 影视剧/纪录片</label>
+      <label><input type="checkbox" name="q8"> 短视频/社交媒体</label>
+      <label><input type="checkbox" name="q8"> 参观红色景点</label>
+      <label><input type="checkbox" name="q8"> 课外书籍/报刊</label>
+      <label><input type="checkbox" name="q8"> 家人长辈讲述</label>
+    </div>
+  </div>
+
+  <!-- ★★★ 新增：视频消费题目 ★★★ -->
+  <div class="question">
+    <div class="q-title"><span class="q-num">9</span><span style="color:#8b1a1a;font-size:0.82em;margin-left:4px;">【新增】</span>您观看过以下哪些革命题材的短视频/纪录片/影视作品？（可多选）</div>
+    <div class="options">
+      <label><input type="checkbox" name="q9"> 《为有牺牲多壮志》（长征90周年纪录片）</label>
+      <label><input type="checkbox" name="q9"> 《百年如愿》（琼崖革命微纪录片）</label>
+      <label><input type="checkbox" name="q9"> 《百炼成钢》（百集党史微纪录片）</label>
+      <label><input type="checkbox" name="q9"> 《长津湖》《觉醒年代》等革命题材影视</label>
+      <label><input type="checkbox" name="q9"> B站/抖音上的红色文化短视频</label>
+      <label><input type="checkbox" name="q9"> 基本没看过这类视频</label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-title"><span class="q-num">10</span>您认为革命文化在当代社会的现实意义如何？</div>
+    <div class="options">
+      <label><input type="radio" name="q10"> 意义重大，是精神支柱</label>
+      <label><input type="radio" name="q10"> 有一定意义，但需与时俱进</label>
+      <label><input type="radio" name="q10"> 意义不大，与时代脱节</label>
+      <label><input type="radio" name="q10"> 说不清楚</label>
+    </div>
+  </div>
+</div>
+
+<!-- ======== 第三部分：态度与情感 ======== -->
+<div class="card">
+  <h2>三、态度与情感层面</h2>
+
+  <div class="question">
+    <div class="q-title"><span class="q-num">11</span>听到国歌或看到国旗升起时，您的感受通常是？</div>
+    <div class="options">
+      <label><input type="radio" name="q11"> 非常激动，充满自豪</label>
+      <label><input type="radio" name="q11"> 有一定感触</label>
+      <label><input type="radio" name="q11"> 没有特别感觉</label>
+      <label><input type="radio" name="q11"> 没注意过</label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-title"><span class="q-num">12</span>您对学校开设的革命文化相关课程（如近现代史纲要）的态度是？</div>
+    <div class="options">
+      <label><input type="radio" name="q12"> 非常感兴趣，主动学习</label>
+      <label><input type="radio" name="q12"> 比较感兴趣</label>
+      <label><input type="radio" name="q12"> 为拿学分，一般对待</label>
+      <label><input type="radio" name="q12"> 不感兴趣，应付了事</label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-title"><span class="q-num">13</span>如果学校组织参观革命纪念馆/红色教育基地，您愿意参加吗？</div>
+    <div class="options">
+      <label><input type="radio" name="q13"> 非常愿意</label>
+      <label><input type="radio" name="q13"> 比较愿意</label>
+      <label><input type="radio" name="q13"> 视情况而定</label>
+      <label><input type="radio" name="q13"> 不太愿意</label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-title"><span class="q-num">14</span>您认为当前大学生革命文化教育存在的主要问题是什么？（可多选）</div>
+    <div class="options">
+      <label><input type="checkbox" name="q14"> 教学方式单一，缺乏吸引力</label>
+      <label><input type="checkbox" name="q14"> 内容过于说教，难以共鸣</label>
+      <label><input type="checkbox" name="q14"> 与实践脱节，流于形式</label>
+      <label><input type="checkbox" name="q14"> 课时不足，重视不够</label>
+      <label><input type="checkbox" name="q14"> 社交媒体冲击，注意力分散</label>
+    </div>
+  </div>
+</div>
+
+<!-- ======== 第四部分：行为参与 ======== -->
+<div class="card">
+  <h2>四、行为参与层面</h2>
+
+  <div class="question">
+    <div class="q-title"><span class="q-num">15</span>过去一年，您参观过几个红色景点或革命遗址？</div>
+    <div class="options">
+      <label><input type="radio" name="q15"> 3个及以上</label>
+      <label><input type="radio" name="q15"> 1-2个</label>
+      <label><input type="radio" name="q15"> 没有参观过</label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-title"><span class="q-num">16</span>您是否主动阅读或观看过革命题材的书籍/影视作品？</div>
+    <div class="options">
+      <label><input type="radio" name="q16"> 经常主动接触</label>
+      <label><input type="radio" name="q16"> 偶尔会看</label>
+      <label><input type="radio" name="q16"> 被动接触到一些</label>
+      <label><input type="radio" name="q16"> 基本不接触</label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-title"><span class="q-num">17</span>您在社交媒体（微信/微博/抖音/B站等）上会关注或转发革命文化相关内容吗？</div>
+    <div class="options">
+      <label><input type="radio" name="q17"> 经常关注并转发</label>
+      <label><input type="radio" name="q17"> 偶尔关注，很少转发</label>
+      <label><input type="radio" name="q17"> 浏览到会看一下</label>
+      <label><input type="radio" name="q17"> 基本忽略</label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-title"><span class="q-num">18</span>您是否参加过革命文化主题的校园活动（如红歌比赛、演讲比赛、征文等）？</div>
+    <div class="options">
+      <label><input type="radio" name="q18"> 多次参加并有所收获</label>
+      <label><input type="radio" name="q18"> 参加过1-2次</label>
+      <label><input type="radio" name="q18"> 知道有但没参加过</label>
+      <label><input type="radio" name="q18"> 不知道有此类活动</label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-title"><span class="q-num">19</span>您更希望革命文化以什么形式呈现？（可多选）</div>
+    <div class="options">
+      <label><input type="checkbox" name="q19"> 高质量影视剧/动漫</label>
+      <label><input type="checkbox" name="q19"> 沉浸式VR/AR体验</label>
+      <label><input type="checkbox" name="q19"> 短视频/微纪录片</label>
+      <label><input type="checkbox" name="q19"> 红色旅游/研学</label>
+      <label><input type="checkbox" name="q19"> 校园文化活动</label>
+      <label><input type="checkbox" name="q19"> 互动游戏/剧本杀</label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-title"><span class="q-num">20</span>您认为提升大学生革命文化认同感最有效的途径是？</div>
+    <div class="options">
+      <label><input type="radio" name="q20"> 改革思政课教学方式</label>
+      <label><input type="radio" name="q20"> 组织实地参观体验</label>
+      <label><input type="radio" name="q20"> 利用新媒体（短视频等）创新传播</label>
+      <label><input type="radio" name="q20"> 家庭与学校协同教育</label>
+      <label><input type="radio" name="q20"> 营造校园文化氛围</label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-title"><span class="q-num">21</span>您对改进当前大学生革命文化教育有何建议？（选填）</div>
+    <div style="padding-left:32px;margin-top:6px;">
+      <textarea rows="3" style="width:100%;border:1px solid #ddd;border-radius:6px;padding:10px;font-size:0.95em;resize:vertical;" placeholder="请输入您的建议（选填）..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ======== 模拟数据 ======== -->
+<div class="card" id="data-section">
+  <h2>五、模拟填写数据（共10份）</h2>
+  <p style="color:#888;font-size:0.9em;margin-bottom:16px;">
+    以下为模拟生成的10份问卷数据，涵盖不同性别、年级、专业和政治面貌，反映不同程度的革命文化认知水平。
+    其中<strong style="color:#8b1a1a;">第9题为新增的视频接触情况</strong>，数据参考了2025-2026年实际调研趋势。
+  </p>
+  <div class="table-wrapper" id="survey-table"></div>
+</div>
+
+<!-- ======== 统计分析 ======== -->
+<div class="card" id="stats-section">
+  <h2>六、模拟数据统计摘要</h2>
+  <div class="stats-grid" id="stats-grid"></div>
+  <div class="chart-row" style="margin-top:25px;">
+    <div class="chart-box">
+      <h3>革命文化认知自评分布</h3>
+      <canvas id="chart1"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>参观红色景点数量</h3>
+      <canvas id="chart2"></canvas>
+    </div>
+  </div>
+  <div class="chart-row" style="margin-top:15px;">
+    <div class="chart-box">
+      <h3>视频作品接触情况（多选，第9题）</h3>
+      <canvas id="chart3"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>期望呈现形式（多选）</h3>
+      <canvas id="chart4"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ======== 视频资源推荐（新增） ======== -->
+<div class="card">
+  <h2>七、革命文化优质视频资源推荐</h2>
+  <p style="color:#888;font-size:0.9em;margin-bottom:16px;">
+    以下为2025-2026年广受关注的革命文化纪录片与短视频资源，可在学习强国、央视频、B站、抖音等平台搜索观看。
+  </p>
+  <div class="video-resource">
+    <div class="video-card">
+      <span class="vc-tag">纪录片</span>
+      <div class="vc-title">《为有牺牲多壮志》</div>
+      <div class="vc-desc">中央广播电视总台出品，10集。长征胜利90周年献礼之作，以10位革命先烈为代表，还原血战湘江、四渡赤水、飞夺泸定桥等重大历史时刻。</div>
+      <div class="vc-platform">平台：央视频、学习强国</div>
+    </div>
+    <div class="video-card">
+      <span class="vc-tag short">微纪录片</span>
+      <div class="vc-title">《百年如愿》</div>
+      <div class="vc-desc">海南日报出品，以旧行李箱为时光信物，结合AI技术还原琼崖革命历史人物。全网浏览量破200万，获人民日报等40+媒体转发。</div>
+      <div class="vc-platform">平台：学习强国、今日头条</div>
+    </div>
+    <div class="video-card">
+      <span class="vc-tag short">微纪录片</span>
+      <div class="vc-title">《百炼成钢：中国共产党的100年》</div>
+      <div class="vc-desc">百集微纪录片，每集选取一个重要党史事件，叙事精炼，适配碎片化学习。是大学生思政课常用补充素材。</div>
+      <div class="vc-platform">平台：芒果TV、B站、学习强国</div>
+    </div>
+    <div class="video-card">
+      <span class="vc-tag short">微纪录片</span>
+      <div class="vc-title">《铭记·大悟红色珍宝》</div>
+      <div class="vc-desc">湖北广电出品，6集×4-6分钟。以六件革命文物"开口说话"的创新形式，再现中原突围80年来的红色记忆。</div>
+      <div class="vc-platform">平台：央视频、长江云</div>
+    </div>
+    <div class="video-card">
+      <span class="vc-tag doc">口述史</span>
+      <div class="vc-title">《档案里的湖北开国将军》第四季</div>
+      <div class="vc-desc">15集×10分钟，湖北省档案馆联合长江日报出品。"将军后人讲述+珍贵档案揭秘+AI技术复原"的微纪录片。</div>
+      <div class="vc-platform">平台：学习强国、B站</div>
+    </div>
+    <div class="video-card">
+      <span class="vc-tag short">微纪录片</span>
+      <div class="vc-title">《烽火笔墨》</div>
+      <div class="vc-desc">CCTV-4出品，30集×6分钟。聚焦桂林抗战文化城，讲述郭沫若、茅盾、巴金、田汉、徐悲鸿等文化名人的抗战故事。</div>
+      <div class="vc-platform">平台：央视频、CCTV-4</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <p>本问卷仅供学术研究使用，感谢您的参与！</p>
+  <p style="margin-top:4px;">思想政治教育工作课题组 &copy; 2026</p>
+</div>
+
+</div><!-- /container -->
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+
+<script>
+// ====== 模拟数据定义（新增 q9 字段）======
+const respondents = [
+  { id:"R01", gender:"男", grade:"大一", major:"理工类", politics:"共青团员",
+    q5:"一般", q6:"能说出1-2位", q7:"了解一部分", q8:"学校思政课,影视剧/纪录片,短视频/社交媒体",
+    q9:"《长津湖》《觉醒年代》等革命题材影视",  // ★新增
+    q10:"有一定意义，但需与时俱进", q11:"有一定感触", q12:"为拿学分，一般对待",
+    q13:"视情况而定", q14:"教学方式单一，缺乏吸引力,内容过于说教，难以共鸣",
+    q15:"1-2个", q16:"被动接触到一些", q17:"浏览到会看一下", q18:"知道有但没参加过",
+    q19:"高质量影视剧/动漫,短视频/微纪录片", q20:"利用新媒体（短视频等）创新传播", q21:"" },
+
+  { id:"R02", gender:"女", grade:"大二", major:"文史哲类", politics:"共青团员",
+    q5:"比较了解", q6:"能说出3-5位", q7:"了解大部分", q8:"学校思政课,影视剧/纪录片,参观红色景点,课外书籍/报刊,家人长辈讲述",
+    q9:"《为有牺牲多壮志》,《百年如愿》,《百炼成钢》,B站/抖音上的红色文化短视频",  // ★新增
+    q10:"意义重大，是精神支柱", q11:"非常激动，充满自豪", q12:"非常感兴趣，主动学习",
+    q13:"非常愿意", q14:"教学方式单一，缺乏吸引力",
+    q15:"3个及以上", q16:"经常主动接触", q17:"经常关注并转发", q18:"多次参加并有所收获",
+    q19:"沉浸式VR/AR体验,红色旅游/研学,高质量影视剧/动漫", q20:"组织实地参观体验",
+    q21:"希望多组织沉浸式体验活动，多推荐优质纪录片" },
+
+  { id:"R03", gender:"男", grade:"大三", major:"经管法类", politics:"中共党员（含预备）",
+    q5:"非常了解", q6:"能说出5位以上", q7:"全部了解", q8:"学校思政课,影视剧/纪录片,参观红色景点,课外书籍/报刊,家人长辈讲述,短视频/社交媒体",
+    q9:"《为有牺牲多壮志》,《百年如愿》,《百炼成钢》,《铭新街1927》,《长津湖》《觉醒年代》等革命题材影视,B站/抖音上的红色文化短视频",  // ★新增
+    q10:"意义重大，是精神支柱", q11:"非常激动，充满自豪", q12:"非常感兴趣，主动学习",
+    q13:"非常愿意", q14:"与实践脱节，流于形式",
+    q15:"3个及以上", q16:"经常主动接触", q17:"经常关注并转发", q18:"多次参加并有所收获",
+    q19:"红色旅游/研学,校园文化活动,高质量影视剧/动漫", q20:"组织实地参观体验",
+    q21:"加强理论与实践结合，用好短视频传播矩阵" },
+
+  { id:"R04", gender:"女", grade:"大二", major:"农医类", politics:"共青团员",
+    q5:"一般", q6:"能说出1-2位", q7:"了解一部分", q8:"学校思政课,短视频/社交媒体",
+    q9:"《长津湖》《觉醒年代》等革命题材影视,B站/抖音上的红色文化短视频",  // ★新增
+    q10:"有一定意义，但需与时俱进", q11:"有一定感触", q12:"为拿学分，一般对待",
+    q13:"视情况而定", q14:"内容过于说教，难以共鸣,社交媒体冲击，注意力分散",
+    q15:"1-2个", q16:"偶尔会看", q17:"浏览到会看一下", q18:"知道有但没参加过",
+    q19:"短视频/微纪录片,互动游戏/剧本杀", q20:"利用新媒体（短视频等）创新传播", q21:"多用年轻人喜欢的方式" },
+
+  { id:"R05", gender:"男", grade:"大四", major:"理工类", politics:"群众",
+    q5:"不太了解", q6:"说不上来", q7:"基本不了解", q8:"影视剧/纪录片",
+    q9:"基本没看过这类视频",  // ★新增
+    q10:"意义不大，与时代脱节", q11:"没有特别感觉", q12:"不感兴趣，应付了事",
+    q13:"不太愿意", q14:"内容过于说教，难以共鸣,教学方式单一，缺乏吸引力",
+    q15:"没有参观过", q16:"基本不接触", q17:"基本忽略", q18:"不知道有此类活动",
+    q19:"互动游戏/剧本杀,短视频/微纪录片", q20:"改革思政课教学方式", q21:"" },
+
+  { id:"R06", gender:"女", grade:"研一", major:"文史哲类", politics:"中共党员（含预备）",
+    q5:"非常了解", q6:"能说出5位以上", q7:"全部了解", q8:"学校思政课,参观红色景点,课外书籍/报刊,家人长辈讲述,影视剧/纪录片",
+    q9:"《为有牺牲多壮志》,《百年如愿》,《百炼成钢》,《铭记·大悟红色珍宝》,《烽火笔墨》,《长津湖》《觉醒年代》等革命题材影视",  // ★新增
+    q10:"意义重大，是精神支柱", q11:"非常激动，充满自豪", q12:"非常感兴趣，主动学习",
+    q13:"非常愿意", q14:"与实践脱节，流于形式",
+    q15:"3个及以上", q16:"经常主动接触", q17:"经常关注并转发", q18:"多次参加并有所收获",
+    q19:"红色旅游/研学,沉浸式VR/AR体验", q20:"组织实地参观体验",
+    q21:"建议建立红色研学长效机制，每周推荐优质微纪录片" },
+
+  { id:"R07", gender:"男", grade:"大一", major:"艺术体育类", politics:"共青团员",
+    q5:"一般", q6:"能说出1-2位", q7:"了解一部分", q8:"短视频/社交媒体,影视剧/纪录片,学校思政课",
+    q9:"《长津湖》《觉醒年代》等革命题材影视,B站/抖音上的红色文化短视频",  // ★新增
+    q10:"有一定意义，但需与时俱进", q11:"有一定感触", q12:"比较感兴趣",
+    q13:"比较愿意", q14:"教学方式单一，缺乏吸引力,社交媒体冲击，注意力分散",
+    q15:"1-2个", q16:"偶尔会看", q17:"偶尔关注，很少转发", q18:"参加过1-2次",
+    q19:"高质量影视剧/动漫,短视频/微纪录片", q20:"利用新媒体（短视频等）创新传播", q21:"" },
+
+  { id:"R08", gender:"女", grade:"大三", major:"经管法类", politics:"共青团员",
+    q5:"比较了解", q6:"能说出3-5位", q7:"了解大部分", q8:"学校思政课,参观红色景点,影视剧/纪录片,课外书籍/报刊",
+    q9:"《为有牺牲多壮志》,《百炼成钢》,《长津湖》《觉醒年代》等革命题材影视",  // ★新增
+    q10:"意义重大，是精神支柱", q11:"非常激动，充满自豪", q12:"比较感兴趣",
+    q13:"非常愿意", q14:"与实践脱节，流于形式,教学方式单一，缺乏吸引力",
+    q15:"3个及以上", q16:"偶尔会看", q17:"偶尔关注，很少转发", q18:"参加过1-2次",
+    q19:"红色旅游/研学,校园文化活动", q20:"组织实地参观体验", q21:"希望课程更生动，多用视频素材" },
+
+  { id:"R09", gender:"男", grade:"大二", major:"理工类", politics:"群众",
+    q5:"不太了解", q6:"能说出1-2位", q7:"了解一部分", q8:"短视频/社交媒体,影视剧/纪录片",
+    q9:"B站/抖音上的红色文化短视频",  // ★新增
+    q10:"说不清楚", q11:"没有特别感觉", q12:"为拿学分，一般对待",
+    q13:"视情况而定", q14:"内容过于说教，难以共鸣,教学方式单一，缺乏吸引力,社交媒体冲击，注意力分散",
+    q15:"没有参观过", q16:"被动接触到一些", q17:"浏览到会看一下", q18:"知道有但没参加过",
+    q19:"短视频/微纪录片,互动游戏/剧本杀", q20:"利用新媒体（短视频等）创新传播", q21:"不要太说教" },
+
+  { id:"R10", gender:"女", grade:"大四", major:"农医类", politics:"共青团员",
+    q5:"比较了解", q6:"能说出3-5位", q7:"了解大部分", q8:"学校思政课,参观红色景点,家人长辈讲述,影视剧/纪录片",
+    q9:"《百年如愿》,《百炼成钢》,《长津湖》《觉醒年代》等革命题材影视",  // ★新增
+    q10:"有一定意义，但需与时俱进", q11:"有一定感触", q12:"比较感兴趣",
+    q13:"比较愿意", q14:"与实践脱节，流于形式",
+    q15:"1-2个", q16:"偶尔会看", q17:"偶尔关注，很少转发", q18:"参加过1-2次",
+    q19:"沉浸式VR/AR体验,红色旅游/研学", q20:"组织实地参观体验",
+    q21:"多组织实地参观，推荐优质纪录片片单" }
+];
+
+// ====== 渲染数据表格 ======
+const cols = ['id','gender','grade','major','politics','q5','q6','q7','q8','q9','q10','q11','q12','q13','q14','q15','q16','q17','q18','q19','q20','q21'];
+const colHeaders = ['编号','性别','年级','专业','政治面貌','自评','先烈知晓','精神了解','了解渠道','★视频接触','意义评价','国旗感受','课程态度','参观意愿','教育问题','参观景点','主动接触','社交媒体','校园活动','期望形式','最有效途径','建议'];
+
+let thead = '<thead><tr>' + colHeaders.map(h => `<th>${h}</th>`).join('') + '</tr></thead>';
+let tbody = '<tbody>';
+respondents.forEach(r => {
+  tbody += '<tr>';
+  cols.forEach(c => {
+    let v = r[c] || '';
+    if (v.length > 15 && c !== 'q21') {
+      v = v.replace(/,/g, ', ');
+    }
+    if (c === 'q9') {
+      // 高亮视频列
+      tbody += `<td style="background:#fef9f5;font-size:0.82em;text-align:left;max-width:180px;">${v}</td>`;
+    } else {
+      tbody += `<td>${v}</td>`;
+    }
+  });
+  tbody += '</tr>';
+});
+tbody += '</tbody>';
+document.getElementById('survey-table').innerHTML = `<table>${thead}${tbody}</table>`;
+
+// ====== 统计数据 ======
+function count(arr, matchFn) { return arr.filter(matchFn).length; }
+function pct(n) { return Math.round(n / respondents.length * 100) + '%'; }
+
+// 统计看过视频的人数（q9不是"基本没看过"）
+const watchedVideo = count(respondents, r => r.q9 !== '基本没看过这类视频');
+// 统计看过纪录片的人数
+const watchedDoc = count(respondents, r => r.q9.includes('为有牺牲多壮志') || r.q9.includes('百年如愿') || r.q9.includes('百炼成钢'));
+
+document.getElementById('stats-grid').innerHTML = `
+  <div class="stat-item">
+    <div class="stat-label">样本总数</div>
+    <div class="stat-value">${respondents.length}</div>
+    <div class="stat-detail">覆盖5个年级、5类专业</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-label">自评"比较了解"及以上</div>
+    <div class="stat-value">${pct(count(respondents, r => ['非常了解','比较了解'].includes(r.q5)))}</div>
+    <div class="stat-detail">${count(respondents, r => ['非常了解','比较了解'].includes(r.q5))}人</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-label">接触过革命题材视频</div>
+    <div class="stat-value">${pct(watchedVideo)}</div>
+    <div class="stat-detail">其中看过纪录片: ${watchedDoc}人</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-label">"非常愿意"参观红色基地</div>
+    <div class="stat-value">${pct(count(respondents, r => r.q13 === '非常愿意'))}</div>
+    <div class="stat-detail">${count(respondents, r => r.q13 === '非常愿意')}人</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-label">参观过红色景点≥1个</div>
+    <div class="stat-value">${pct(count(respondents, r => r.q15 !== '没有参观过'))}</div>
+    <div class="stat-detail">其中3个及以上: ${count(respondents, r => r.q15 === '3个及以上')}人</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-label">首选"新媒体创新传播"</div>
+    <div class="stat-value">${pct(count(respondents, r => r.q20.includes('新媒体')))}</div>
+    <div class="stat-detail">${count(respondents, r => r.q20.includes('新媒体'))}人选此项</div>
+  </div>
+`;
+
+// ====== Chart.js 图表 ======
+// 图1: 自评认知水平
+const ctx1 = document.getElementById('chart1').getContext('2d');
+new Chart(ctx1, {
+  type: 'bar',
+  data: {
+    labels: ['非常了解','比较了解','一般','不太了解','完全不了解'],
+    datasets: [{
+      label: '人数',
+      data: [
+        count(respondents, r => r.q5 === '非常了解'),
+        count(respondents, r => r.q5 === '比较了解'),
+        count(respondents, r => r.q5 === '一般'),
+        count(respondents, r => r.q5 === '不太了解'),
+        count(respondents, r => r.q5 === '完全不了解')
+      ],
+      backgroundColor: ['#8b1a1a','#b53434','#d4a574','#d4c5b2','#e8ddd0']
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+  }
+});
+
+// 图2: 参观红色景点数
+const ctx2 = document.getElementById('chart2').getContext('2d');
+new Chart(ctx2, {
+  type: 'doughnut',
+  data: {
+    labels: ['3个及以上','1-2个','没有参观过'],
+    datasets: [{
+      data: [
+        count(respondents, r => r.q15 === '3个及以上'),
+        count(respondents, r => r.q15 === '1-2个'),
+        count(respondents, r => r.q15 === '没有参观过')
+      ],
+      backgroundColor: ['#8b1a1a','#d4a574','#e8ddd0']
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'bottom' } }
+  }
+});
+
+// 图3: 视频作品接触情况（第9题多选统计）
+const ctx3 = document.getElementById('chart3').getContext('2d');
+const videoLabels = [
+  '《为有牺牲多壮志》',
+  '《百年如愿》',
+  '《百炼成钢》',
+  '《长津湖》《觉醒年代》等',
+  'B站/抖音短视频',
+  '基本没看过'
+];
+const videoCounts = videoLabels.map(vl =>
+  count(respondents, r => r.q9.includes(vl.substring(0,6)))
+);
+new Chart(ctx3, {
+  type: 'bar',
+  data: {
+    labels: ['为有牺牲多壮志','百年如愿','百炼成钢','长津湖/觉醒年代','B站/抖音','基本没看过'],
+    datasets: [{
+      label: '选择人数',
+      data: videoCounts,
+      backgroundColor: ['#8b1a1a','#b53434','#c0392b','#d4a574','#d4c5b2','#e8ddd0']
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } }
+  }
+});
+
+// 图4: 期望形式（多选统计）
+const ctx4 = document.getElementById('chart4').getContext('2d');
+const formLabels = ['高质量影视剧/动漫','沉浸式VR/AR体验','短视频/微纪录片','红色旅游/研学','校园文化活动','互动游戏/剧本杀'];
+const formCounts = formLabels.map(f =>
+  count(respondents, r => r.q19.includes(f))
+);
+new Chart(ctx4, {
+  type: 'bar',
+  data: {
+    labels: ['影视动漫','VR/AR','短视频','红色旅游','校园活动','游戏/剧本杀'],
+    datasets: [{
+      label: '选择人数',
+      data: formCounts,
+      backgroundColor: '#d4a574'
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } }
+  }
+});
+</script>
+
+</body>
+</html>
